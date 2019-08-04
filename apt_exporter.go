@@ -86,7 +86,7 @@ func unique(src []string) []string {
 	return dst
 }
 
-type AptExporter struct{
+type AptExporter struct {
 	aptPath string
 	cache   *cache.Cache
 	watcher *fsnotify.Watcher
@@ -209,6 +209,9 @@ func (e *AptExporter) Watch() error {
 				switch evt.Name {
 				case "/var/log/apt/history.log":
 					if err := e.cacheInstalledPackages(); err != nil {
+						log.Errorln(err)
+					}
+					if err := e.cacheUpgradeablePackages(); err != nil {
 						log.Errorln(err)
 					}
 
