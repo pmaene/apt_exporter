@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 	"runtime"
+	"runtime/debug"
 	"strings"
 
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -44,8 +45,6 @@ var (
 		nil,
 		nil,
 	)
-
-	version = ""
 )
 
 func parseAptOutput(out []byte) []*Package {
@@ -298,6 +297,15 @@ func NewAptExporter() (*AptExporter, error) {
 	return &AptExporter{p, c, w}, nil
 }
 
+func getBuildInfo() debug.Module {
+	bi, ok := debug.ReadBuildInfo()
+	if ok {
+		return bi.Main
+	}
+
+	return debug.Module{Version: "unknown"}
+}
+
 func main() {
 	var (
 		listenAddress = kingpin.Flag(
@@ -315,7 +323,7 @@ func main() {
 		fmt.Sprintf(
 			"%s %s compiled with %v on %v/%v",
 			kingpin.CommandLine.Name,
-			version,
+			getBuildInfo().Version,
 			runtime.Version(),
 			runtime.GOOS,
 			runtime.GOARCH,
@@ -324,7 +332,7 @@ func main() {
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	log.Infoln("Starting", kingpin.CommandLine.Name, version)
+	log.Infoln("Starting", kingpin.CommandLine.Name, getBuildInfo().Version)
 
 	e, err := NewAptExporter()
 	if err != nil {
