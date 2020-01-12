@@ -76,7 +76,7 @@ func unique(src []string) []string {
 
 	mm := map[string]bool{}
 	for _, v := range src {
-		if mm[v] == false {
+		if !mm[v] {
 			mm[v] = true
 			dst = append(dst, v)
 		}
@@ -345,7 +345,7 @@ func main() {
 
 	http.Handle(*metricsPath, promhttp.Handler())
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write(
+		_, err := w.Write(
 			[]byte(
 				`<html>
 				<head><title>APT Exporter</title></head>
@@ -356,6 +356,10 @@ func main() {
 				</html>`,
 			),
 		)
+
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
 	})
 
 	log.Infoln("Listening on", *listenAddress)
