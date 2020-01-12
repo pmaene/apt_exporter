@@ -86,13 +86,12 @@ func unique(src []string) []string {
 }
 
 type AptExporter struct {
-	aptPath string
 	cache   *cache.Cache
 	watcher *fsnotify.Watcher
 }
 
 func (e *AptExporter) cacheInstalledPackages() error {
-	out, err := exec.Command(e.aptPath, "list", "--installed").Output()
+	out, err := exec.Command("/usr/bin/apt", "list", "--installed").Output()
 	if err != nil {
 		return err
 	}
@@ -107,7 +106,7 @@ func (e *AptExporter) cacheInstalledPackages() error {
 	return nil
 }
 func (e *AptExporter) cacheUpgradeablePackages() error {
-	out, err := exec.Command(e.aptPath, "list", "--upgradable").Output()
+	out, err := exec.Command("/usr/bin/apt", "list", "--upgradable").Output()
 	if err != nil {
 		return err
 	}
@@ -282,11 +281,6 @@ func (e *AptExporter) Collect(ch chan<- prometheus.Metric) {
 }
 
 func NewAptExporter() (*AptExporter, error) {
-	p, err := exec.LookPath("apt")
-	if err != nil {
-		return nil, err
-	}
-
 	c := cache.New(cache.NoExpiration, 0)
 
 	w, err := fsnotify.NewWatcher()
@@ -294,7 +288,10 @@ func NewAptExporter() (*AptExporter, error) {
 		return nil, err
 	}
 
-	return &AptExporter{p, c, w}, nil
+	return &AptExporter{
+		cache:   c,
+		watcher: w,
+	}, nil
 }
 
 func getBuildInfo() debug.Module {
