@@ -32,6 +32,8 @@ const (
 	CACHE_UPGRADEABLE_PACKAGES = "upgradeable_packages"
 )
 
+var version = ""
+
 var (
 	aptUpDesc = prometheus.NewDesc(
 		prometheus.BuildFQName("apt", "", "up"),
@@ -297,10 +299,25 @@ func NewAptExporter() (*AptExporter, error) {
 func getBuildInfo() debug.Module {
 	bi, ok := debug.ReadBuildInfo()
 	if ok {
+		if version != "" {
+			return debug.Module{
+				Path:    bi.Main.Path,
+				Version: version,
+				Sum:     bi.Main.Sum,
+				Replace: bi.Main.Replace,
+			}
+		}
+
 		return bi.Main
 	}
 
-	return debug.Module{Version: "unknown"}
+	return debug.Module{}
+}
+
+func init() {
+	if !strings.HasPrefix(version, "v") {
+		version = "v" + version
+	}
 }
 
 func main() {

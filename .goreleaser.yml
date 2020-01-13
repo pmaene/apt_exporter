@@ -9,6 +9,8 @@ builds:
       - linux
     goarch:
       - amd64
+    ldflags:
+      - -s -w -X main.version={{ .Version }}
 
 archives:
   - name_template: "{{ .ProjectName }}-{{ .Version }}.{{ .Os }}-{{ .Arch }}"
