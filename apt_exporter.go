@@ -351,11 +351,13 @@ func main() {
 	e, err := NewAptExporter()
 	if err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 	defer e.Close()
 
 	if err := e.Watch(); err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 
 	prometheus.MustRegister(e)
@@ -382,5 +384,6 @@ func main() {
 	log.Infoln("Listening on", *listenAddress)
 	if err := http.ListenAndServe(*listenAddress, nil); err != nil {
 		log.Fatal(err)
+		os.Exit(1)
 	}
 }
