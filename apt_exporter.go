@@ -241,7 +241,7 @@ func (e *AptExporter) Watch() error {
 	if err := e.cacheUpgradeablePackages(); err != nil {
 		return err
 	}
-	if err := e.watcher.Add("/var/lib/apt/periodic/update-success-stamp"); err != nil {
+	if err := e.watcher.Add("/var/lib/apt/periodic/"); err != nil {
 		return err
 	}
 
