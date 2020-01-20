@@ -50,10 +50,10 @@ var (
 )
 
 func parseAptOutput(out []byte) []*Package {
+	sc := bufio.NewScanner(bytes.NewReader(out))
 	re := regexp.MustCompile(`^([^ ]+)\/([^ ]+) [^ ]+ ([^ ]+)`)
 
-	ps := []*Package{}
-	sc := bufio.NewScanner(bytes.NewReader(out))
+	var ps []*Package
 	for sc.Scan() {
 		ms := re.FindAllStringSubmatch(sc.Text(), -1)
 		if len(ms) == 0 {
@@ -74,9 +74,9 @@ func parseAptOutput(out []byte) []*Package {
 }
 
 func unique(src []string) []string {
-	dst := []string{}
+	var dst []string
 
-	mm := map[string]bool{}
+	mm := make(map[string]bool)
 	for _, v := range src {
 		if !mm[v] {
 			mm[v] = true
