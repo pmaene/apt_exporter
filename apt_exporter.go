@@ -215,6 +215,11 @@ func (e *AptExporter) Watch() error {
 						log.Errorln(err)
 					}
 
+				case "/var/lib/apt/periodic/update-stamp":
+					if err := e.cacheUpgradeablePackages(); err != nil {
+						log.Errorln(err)
+					}
+
 				case "/var/lib/apt/periodic/update-success-stamp":
 					if err := e.cacheUpgradeablePackages(); err != nil {
 						log.Errorln(err)
