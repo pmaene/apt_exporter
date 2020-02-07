@@ -7,7 +7,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.7
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/prometheus/client_golang v1.4.0
+	github.com/prometheus/client_golang v1.4.1
 	github.com/prometheus/common v0.9.1
 	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
