@@ -9,6 +9,5 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.5.1
 	github.com/prometheus/common v0.9.1
-	golang.org/x/sys v0.0.0-20200113162924-86b910548bc1 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 )
