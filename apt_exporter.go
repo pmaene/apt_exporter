@@ -12,13 +12,12 @@ import (
 	"runtime/debug"
 	"strings"
 
-	"gopkg.in/alecthomas/kingpin.v2"
-
 	"github.com/fsnotify/fsnotify"
 	"github.com/patrickmn/go-cache"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 type Package struct {
@@ -206,24 +205,14 @@ func (e *AptExporter) Watch() error {
 					return
 				}
 
-				switch evt.Name {
-				case "/var/log/apt/history.log":
+				if evt.Name == "/var/log/apt/history.log" {
 					if err := e.cacheInstalledPackages(); err != nil {
 						log.Errorln(err)
 					}
-					if err := e.cacheUpgradeablePackages(); err != nil {
-						log.Errorln(err)
-					}
+				}
 
-				case "/var/lib/apt/periodic/update-stamp":
-					if err := e.cacheUpgradeablePackages(); err != nil {
-						log.Errorln(err)
-					}
-
-				case "/var/lib/apt/periodic/update-success-stamp":
-					if err := e.cacheUpgradeablePackages(); err != nil {
-						log.Errorln(err)
-					}
+				if err := e.cacheUpgradeablePackages(); err != nil {
+					log.Errorln(err)
 				}
 
 			case err, ok := <-e.watcher.Errors:
@@ -239,7 +228,7 @@ func (e *AptExporter) Watch() error {
 	if err := e.cacheInstalledPackages(); err != nil {
 		return err
 	}
-	if err := e.watcher.Add("/var/log/apt/history.log"); err != nil {
+	if err := e.watcher.Add("/var/log/apt/"); err != nil {
 		return err
 	}
 
