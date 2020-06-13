@@ -142,7 +142,7 @@ func (e *AptExporter) collectInstalledPackages(ch chan<- prometheus.Metric) erro
 
 	for _, p := range ps.([]*Package) {
 		for _, s := range p.Suites {
-			aptPackagesInstalled.WithLabelValues(s, p.Architecture).Inc()
+			aptPackagesInstalled.WithLabelValues(p.Architecture, s).Inc()
 		}
 	}
 
