@@ -17,6 +17,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
+	"github.com/spf13/viper"
 	"gopkg.in/alecthomas/kingpin.v2"
 )
 
@@ -357,6 +358,11 @@ func main() {
 	prometheus.MustRegister(e)
 
 	http.Handle(*metricsPath, promhttp.Handler())
+
+	s := http.Server{
+		ReadHeaderTimeout: viper.GetDuration("admin.read-header-timeout"),
+	}
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write(
 			[]byte(
